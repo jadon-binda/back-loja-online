@@ -9,3 +9,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Product {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  price       Decimal @db.Money
+  quantity    Int
+  description String?
+  imageURL    String?
+  orders      Order[]
+
+  @@map("products")
+}
+
+model Order {
+  id       String    @id @default(uuid())
+  date     DateTime  @default(now())
+  amount   Decimal   @db.Money
+  status   Boolean   @default(false)
+  products Product[]
+
+  @@map("orders")
+}
