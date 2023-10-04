@@ -1,5 +1,7 @@
 import { Router } from 'express'
+import { listProducts } from './controllers/productsController'
 const router = Router()
-const productsController = require('./controllers/productsController')
 
-module.exports = router
+router.get('/products', listProducts)
+
+export default router
