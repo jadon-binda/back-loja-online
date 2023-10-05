@@ -1,7 +1,8 @@
 import { Router } from 'express'
-import { listProducts } from './controllers/productsController'
+import { detailProduct, listProducts } from './controllers/productsController'
 const router = Router()
 
 router.get('/products', listProducts)
+router.get('/product/:id', detailProduct)
 
 export default router
