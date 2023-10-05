@@ -4,7 +4,6 @@ const prisma = new PrismaClient()
 
 export const registerOrder = async (req: Request, res: Response) => {
   const { amount } = req.body
-
   try {
     const order = await prisma.order.create({
       data: {
@@ -12,7 +11,6 @@ export const registerOrder = async (req: Request, res: Response) => {
         //status: false,
       }
     })
-
     return res.status(201).json(order)
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
@@ -65,11 +63,30 @@ export const updateOrder = async (req: Request, res: Response) => {
         status,
       }
     })
+
+    return res.json({ mensagem: 'Pedido atualizado com sucesso.' })
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
   }
 }
 
 export const deleteOrder = async (req: Request, res: Response) => {
+  const { id } = req.params
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: id }
+    })
 
+    if (!order) {
+      return res.status(404).json({ mensagem: 'Pedido não encontrado.' })
+    }
+
+    await prisma.order.delete({
+      where: { id: id }
+    })
+
+    return res.json({ mensagem: 'Pedido excluído com sucesso.' })
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
+  }
 }
