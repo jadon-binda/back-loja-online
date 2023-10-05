@@ -29,7 +29,20 @@ export const listOrders = async (req: Request, res: Response) => {
 }
 
 export const detailOrder = async (req: Request, res: Response) => {
+  const { id } = req.params
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: id }
+    })
 
+    if (!order) {
+      return res.status(404).json({ mensagem: 'Pedido não encontrado.' })
+    }
+
+    return res.json(order)
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
+  }
 }
 
 export const updateOrder = async (req: Request, res: Response) => {
