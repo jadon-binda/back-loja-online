@@ -8,7 +8,6 @@ export const listProducts = async (req: Request, res: Response) => {
   return res.status(200).json(products)
 }
 
-// listar um produto
 export const detailProduct = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
@@ -19,13 +18,36 @@ export const detailProduct = async (req: Request, res: Response) => {
     if (!product) {
       return res.status(404).json({ mensagem: 'Produto não encontrado.' })
     }
+
     return res.json(product)
   } catch (error) {
     return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
   }
 }
 
-// criação de um produto
+export const registerProduct = async (req: Request, res: Response) => {
+  const { name, price, quantity, description, imageURL } = req.body
+
+  try {
+    if (!name || !price || !quantity) {
+      return res.status(400).json({ mensagem: 'Informe os campos obrigatórios: nome, preço e quantidade.' })
+    }
+
+    await prisma.product.create({
+      data: {
+        name,
+        price: Number(price),
+        quantity: Number(quantity),
+        description,
+        imageURL
+      }
+    })
+
+    return res.status(201).json({ mensagem: 'Produto cadastrado com sucesso.' })
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
+  }
+}
 
 // atualizar um produto
 
