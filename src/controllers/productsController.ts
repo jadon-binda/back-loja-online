@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
-import { log } from 'console'
 const prisma = new PrismaClient()
 
 export const listProducts = async (req: Request, res: Response) => {
@@ -79,4 +78,24 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 }
 
-// excluir um produto
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: id }
+    })
+
+    if (!product) {
+      return res.status(404).json({ mensagem: 'Produto não encontrado.' })
+    }
+
+    await prisma.product.delete({
+      where: { id: id }
+    })
+
+    return res.json({ mensagem: 'Produto excluído com sucesso.' })
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
+  }
+}
