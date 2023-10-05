@@ -46,7 +46,28 @@ export const detailOrder = async (req: Request, res: Response) => {
 }
 
 export const updateOrder = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { date, amount, status } = req.body
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: id }
+    })
 
+    if (!order) {
+      return res.status(404).json({ mensagem: 'Pedido não encontrado.' })
+    }
+
+    await prisma.order.update({
+      where: { id: id },
+      data: {
+        date,
+        amount: Number(amount),
+        status,
+      }
+    })
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
+  }
 }
 
 export const deleteOrder = async (req: Request, res: Response) => {
