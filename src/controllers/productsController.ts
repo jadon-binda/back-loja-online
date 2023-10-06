@@ -1,5 +1,5 @@
-import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express'
 const prisma = new PrismaClient()
 
 export const listProducts = async (_: Request, res: Response) => {
@@ -15,7 +15,7 @@ export const detailProduct = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const product = await prisma.product.findUnique({
-      where: { id: id },
+      where: { id: Number(id) },
     })
     if (!product) {
       return res.status(404).json({ mensagem: 'Produto não encontrado.' })
@@ -27,18 +27,18 @@ export const detailProduct = async (req: Request, res: Response) => {
 }
 
 export const registerProduct = async (req: Request, res: Response) => {
-  const { name, price, quantity, description, imageURL } = req.body
+  const { name, price, description, imageURL, stock } = req.body
   try {
-    if (!name || !price || !quantity) {
+    if (!name || !price) {
       return res.status(400).json({ mensagem: 'Informe os campos obrigatórios: nome, preço e quantidade.' })
     }
     const newProduct = await prisma.product.create({
       data: {
         name,
         price: Number(price),
-        quantity: Number(quantity),
         description,
-        imageURL
+        imageURL,
+        stock: Number(stock),
       }
     })
     return res.status(201).json(newProduct)
@@ -48,23 +48,23 @@ export const registerProduct = async (req: Request, res: Response) => {
 }
 
 export const updateProduct = async (req: Request, res: Response) => {
-  const { name, price, quantity, description, imageURL } = req.body
+  const { name, price, description, imageURL, stock } = req.body
   const { id } = req.params
   try {
     const product = await prisma.product.findUnique({
-      where: { id: id },
+      where: { id: Number(id) },
     })
     if (!product) {
       return res.status(404).json({ mensagem: 'Produto não encontrado.' })
     }
     await prisma.product.update({
-      where: { id: id },
+      where: { id: Number(id) },
       data: {
         name,
         price: Number(price),
-        quantity: Number(quantity),
         description,
-        imageURL
+        imageURL,
+        stock: Number(stock),
       }
     })
     return res.json({ mensagem: 'Produto atualizado com sucesso.' })
@@ -77,13 +77,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const product = await prisma.product.findUnique({
-      where: { id: id }
+      where: { id: Number(id) }
     })
     if (!product) {
       return res.status(404).json({ mensagem: 'Produto não encontrado.' })
     }
     await prisma.product.delete({
-      where: { id: id }
+      where: { id: Number(id) }
     })
     return res.json({ mensagem: 'Produto excluído com sucesso.' })
   } catch (error) {

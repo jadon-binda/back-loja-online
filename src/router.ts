@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { deleteProduct, detailProduct, listProducts, registerProduct, updateProduct } from './controllers/productsController'
 import { deleteOrder, detailOrder, listOrders, registerOrder, updateOrder } from './controllers/ordersController'
+import { deleteProduct, detailProduct, listProducts, registerProduct, updateProduct } from './controllers/productsController'
 const router = Router()
 
 router.get('/product', listProducts)

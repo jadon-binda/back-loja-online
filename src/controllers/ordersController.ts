@@ -1,14 +1,13 @@
-import { Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express'
 const prisma = new PrismaClient()
 
 export const registerOrder = async (req: Request, res: Response) => {
-  const { amount } = req.body
+  const { value } = req.body
   try {
     const order = await prisma.order.create({
       data: {
-        amount: Number(amount),
-        //status: false,
+        value: Number(value),
       }
     })
     return res.status(201).json(order)
@@ -17,7 +16,7 @@ export const registerOrder = async (req: Request, res: Response) => {
   }
 }
 
-export const listOrders = async (req: Request, res: Response) => {
+export const listOrders = async (_: Request, res: Response) => {
   try {
     const orders = await prisma.order.findMany()
     return res.json(orders)
@@ -45,7 +44,7 @@ export const detailOrder = async (req: Request, res: Response) => {
 
 export const updateOrder = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { date, amount, status } = req.body
+  const { date, value, status } = req.body
   try {
     const order = await prisma.order.findUnique({
       where: { id: id }
@@ -59,7 +58,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       where: { id: id },
       data: {
         date,
-        amount: Number(amount),
+        value: Number(value),
         status,
       }
     })
