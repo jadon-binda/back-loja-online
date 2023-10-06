@@ -13,21 +13,33 @@ datasource db {
 model Product {
   id          String  @id @default(uuid())
   name        String  @unique
-  price       Decimal @db.Money
-  quantity    Int
   description String?
+  qtyStock    Int
+  price       Decimal @db.Money
   imageURL    String?
-  orders      Order[]
+  Item        Item[]
 
   @@map("products")
 }
 
 model Order {
-  id       String    @id @default(uuid())
-  date     DateTime  @default(now())
-  amount   Decimal   @db.Money
-  status   Boolean   @default(false)
-  products Product[]
+  id         String   @id @default(uuid())
+  date       DateTime @default(now())
+  totalOrder Decimal  @db.Money
+  status     Boolean  @default(false)
+  Item       Item[]
 
   @@map("orders")
+}
+
+model Item {
+  id        String  @id @default(uuid())
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  order     Order   @relation(fields: [OrderId], references: [id])
+  OrderId   String
+  qty       Int
+  totalItem Decimal @db.Money
+
+  @@map("items")
 }
